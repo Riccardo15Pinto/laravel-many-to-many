@@ -25,6 +25,10 @@
                             <a href="#" class="nav-link">Scopri di più</a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('admin.technologys.index') }}"
+                                class="nav-link @if (request()->routeIs('admin.technologys*')) active @endif">Tecnologie</a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('admin.types.index') }}"
                                 class="nav-link @if (request()->routeIs('admin.types*')) active @endif">Tipi</a>
                         </li>
