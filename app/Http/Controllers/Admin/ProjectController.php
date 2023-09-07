@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
@@ -29,7 +30,8 @@ class ProjectController extends Controller
 
         $project = new Project();
         $types = Type::all();
-        return view('admin.project.create', compact('project', 'types'));
+        $technologys = Technology::all();
+        return view('admin.project.create', compact('project', 'types', 'technologys'));
     }
 
     /**
@@ -46,8 +48,8 @@ class ProjectController extends Controller
                 'url_project' => 'required|string|url',
                 'description_project' => 'required|string',
                 'type_id' => 'required|string|exists:types,id',
-                'image' => 'required|image'
-
+                'image' => 'required|image',
+                'technologys' => 'nullable|exists:technologies,id'
             ],
             [
                 'name_project.required' => 'Il titolo è obbligatorio',
@@ -56,18 +58,12 @@ class ProjectController extends Controller
                 'type_id.required' => 'La tipologia di progetto è obbligatoria',
                 'type_id.exists' => 'La tipologia scelta non esiste',
                 'url_project.url' => 'L\'url deve contenere http , https',
-                'image.required' => 'L\' immagine è obbligatoria'
-
+                'image.required' => 'L\' immagine è obbligatoria',
+                'technologys.exists' => 'La tecnologia selezionata non è valida'
             ]
         );
 
         $project = new Project();
-
-        // if (Arr::exists($request, 'image')) {
-        //     if ($project->image) Storage::delete($project->image);
-        //     $img_url = Storage::putFile('project_images', $request->image);
-        //     $project->image = $img_url;
-        // }
 
         if (Arr::exists($data_new_project, 'image')) {
             if ($project->image) Storage::delete($project->image);
@@ -78,6 +74,10 @@ class ProjectController extends Controller
         $project->fill($data_new_project);
         $project->slug = Str::slug($data_new_project['name_project'], '-');
         $project->save();
+
+        if (array_key_exists('technologys', $data_new_project)) {
+            $project->technologys()->attach($data_new_project['technologys']);
+        }
 
         return to_route('admin.projects.show', $project)->with('alert-type', 'success')->with('alert-message', "$project->name_project creato con successo");
     }
@@ -96,7 +96,9 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.project.edit', compact('project', 'types'));
+        $technologys = Technology::all();
+        $project_tech_ids = $project->technologys->pluck('id')->toArray();
+        return view('admin.project.edit', compact('project', 'types', 'technologys', 'project_tech_ids'));
     }
 
     /**
@@ -112,8 +114,8 @@ class ProjectController extends Controller
                 'url_project' => 'required|string|url',
                 'description_project' => 'required|string',
                 'type_id' => 'required|string|exists:types,id',
-                'image' => 'required|image'
-
+                'image' => 'required|image',
+                'technologys' => 'nullable|exists:technologies,id'
             ],
             [
                 'name_project.required' => 'Il titolo è obbligatorio',
@@ -122,8 +124,8 @@ class ProjectController extends Controller
                 'type_id.required' => 'La tipologia di progetto è obbligatoria',
                 'type_id.exists' => 'La tipologia scelta non esiste',
                 'url_project.url' => 'L\'url deve contenere http , https',
-                'image.required' => 'L\' immagine è obbligatoria'
-
+                'image.required' => 'L\' immagine è obbligatoria',
+                'technologys.exists' => 'La tecnologia selezionata non è valida'
             ]
         );
 
@@ -133,13 +135,10 @@ class ProjectController extends Controller
             $data_new_project['image'] = $img_url;
         }
 
-        // if (Arr::exists($request, 'image')) {
-        //     if ($project->image) Storage::delete($project->image);
-        //     $img_url = Storage::putFile('project_images', $request['image']);
-        //     $project->image = $img_url;
-        // }
-
         $project->update($data_new_project);
+
+        if (!Arr::exists($data_new_project, 'technologys') && count($project->technologys)) $project->technologys()->detach();
+        elseif (Arr::exists($data_new_project, 'technologys')) $project->technologys()->sync($data_new_project['technologys']);
 
         return to_route('admin.projects.show', $project)->with('alert-type', 'success')->with('alert-message', "$project->name_project modificato con successo");
     }

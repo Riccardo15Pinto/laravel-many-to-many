@@ -72,6 +72,21 @@
         <img src="https://marcolanci.it/utils/placeholder.jpg" alt="preview-logo" id="image-preview"
             style="width: 150px;">
     </div>
+    <div class="col-12 py-2">
+        @foreach ($technologys as $tech)
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" @if (in_array($tech->id, old('technologys', $project_tech_ids ?? []))) checked @endif
+                    id="tech-{{ $tech->id }}" value="{{ $tech->id }}" name="technologys[]">
+                <label class="form-check-label" for="tech-{{ $tech->id }}">{{ $tech->label }}</label>
+            </div>
+        @endforeach
+        @error('technologys')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+
+    </div>
 </div>
 <button type="submit" class="btn btn-success my-3">
     <i class="fa-regular fa-floppy-disk"></i>
