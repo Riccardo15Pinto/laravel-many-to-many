@@ -28,9 +28,14 @@
     </div>
     <div class="col-12 py-2">
         <label for="color" class="form-label">Tipo Colore :</label>
-        <input type="color"
-            class="form-control @error('color') is-invalid @elseif(old('color')) is-valid @enderror"
-            id="color" name="color" value="{{ old('color', $technology->color ?? '') }}">
+        <select class="form-select" name="color">
+            @foreach (config('tech') as $item)
+                <option value="{{ old('color', $item['color'] ?? '') }}">
+                    <span class="text-{{ $item['color'] }}">{{ $item['info'] }}</span>
+                </option>
+            @endforeach
+
+        </select>
         @error('color')
             <div class="invalid-feedback">
                 {{ $message }}

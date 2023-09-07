@@ -36,14 +36,14 @@ class TechnologyController extends Controller
         $data_new_tech = $request->all();
         $request->validate(
             [
-                'label' => 'required|string|max:30',
-                'color' => 'nullable|regex:/^#(?:[0-9a-fA-F]{3}){1,2}$/',
+                'label' => 'required|unique:technologies|string|max:30',
+                'color' => 'nullable',
                 'info' => 'nullable|string',
             ],
             [
                 'label.required' => 'Il nome della tipologia è obbligatorio',
                 'label.max' => 'Il nome della tipologia è troppo lungo',
-                'color.regex' => 'Il colore inserito non è un colore esadecimale valido',
+                'label.unique' => 'Il nome scelto esiste già'
             ]
         );
 
@@ -79,17 +79,17 @@ class TechnologyController extends Controller
         $request->validate(
             [
                 'label' => ['required', 'string', 'max:30', Rule::unique('technologies')->ignore($technology)],
-                'color' => 'nullable|regex:/^#(?:[0-9a-fA-F]{3}){1,2}$/',
+                'color' => 'nullable',
+                'info' => 'nullable|string',
             ],
             [
                 'label.required' => 'Il nome della tipologia è obbligatorio',
                 'label.max' => 'Il nome della tipologia è troppo lungo',
-                'color.regex' => 'Il colore inserito non è un colore esadecimale valido',
             ]
         );
 
         $technology->update($data_new_tech);
-        return to_route('admin.technology.show', compact('type'))->with('alert-type', 'success')->with('alert-message', "$technology->label modificato con successo");
+        return to_route('admin.technologys.show', compact('technology'))->with('alert-type', 'success')->with('alert-message', "$technology->label modificato con successo");
     }
 
     /**
@@ -98,7 +98,7 @@ class TechnologyController extends Controller
     public function destroy(Technology $technology)
     {
         $technology->delete();
-        return to_route('admin.technology.index')
+        return to_route('admin.technologys.index')
             ->with('alert-type', 'success')
             ->with('alert-message', "$technology->label eliminato con successo"); //
     }
