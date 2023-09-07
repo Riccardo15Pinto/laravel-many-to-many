@@ -150,6 +150,8 @@ class ProjectController extends Controller
     {
         if ($project->image) Storage::delete($project->image);
         $project->delete();
+        $project->technologys()->detach();
+
         return to_route('admin.projects.index')
             ->with('alert-type', 'success')
             ->with('alert-message', "$project->name_project eliminato con successo")
