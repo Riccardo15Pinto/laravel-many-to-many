@@ -4,7 +4,7 @@
 @section('content')
     <div class="container">
         <h2 class="fs-4 text-secondary my-4">
-            Tipi
+            Tecnologie
         </h2>
         <table class="table">
             <thead>
