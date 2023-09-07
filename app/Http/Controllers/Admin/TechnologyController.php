@@ -24,8 +24,8 @@ class TechnologyController extends Controller
      */
     public function create()
     {
-        $techs = new Technology();
-        return view('admin.technology.create', compact('techs'));
+        $technology = new Technology();
+        return view('admin.technology.create', compact('technology'));
     }
 
     /**
@@ -51,7 +51,7 @@ class TechnologyController extends Controller
         $tech->fill($data_new_tech);
         $tech->save();
 
-        return to_route('admin.technology.index')->with('alert-tech', 'success')->with('alert-message', "$tech->label creato con successo");
+        return to_route('admin.technologys.index')->with('alert-type', 'success')->with('alert-message', "$tech->label creato con successo");
     }
 
     /**

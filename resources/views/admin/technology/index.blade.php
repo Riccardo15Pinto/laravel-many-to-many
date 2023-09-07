@@ -54,7 +54,7 @@
             </tbody>
         </table>
         <div class="d-flex align-items-center justify-content-between">
-            <a href="{{ route('admin.types.create') }}" class="btn btn-primary">
+            <a href="{{ route('admin.technologys.create') }}" class="btn btn-primary">
                 <i class="fa-solid fa-plus"></i>
                 Aggiungi Nuova categoria
             </a>

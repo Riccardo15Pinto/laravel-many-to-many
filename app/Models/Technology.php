@@ -11,7 +11,7 @@ class Technology extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['label', 'color'];
+    protected $fillable = ['label', 'color', 'info'];
 
     public function projects()
     {
