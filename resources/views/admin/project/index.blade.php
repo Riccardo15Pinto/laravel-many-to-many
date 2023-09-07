@@ -12,6 +12,7 @@
                     <th scope="col">ID</th>
                     <th scope="col">Nome Progetto</th>
                     <th scope="col">Repository</th>
+                    <th scope="col">Tecnologia</th>
                     <th scope="col">Descrizione</th>
                     <th scope="col">Tipologia</th>
                     <th scope="col"></th>
@@ -24,6 +25,11 @@
                         <td>{{ $project->name_project }}</td>
                         <td>
                             <a href="{{ $project->url_project }}">Vedi progetto su GitHub</a>
+                        </td>
+                        <td>
+                            @foreach ($project->technologys as $technology)
+                                <span class="text-{{ $technology->color }}">{{ $technology->label }}</span>
+                            @endforeach
                         </td>
                         <td>{{ $project->description_project }}</td>
                         <td>{{ $project->type->label }}</td>
